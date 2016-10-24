@@ -1,0 +1,2 @@
+add_executable(StarNetworkSimulator StarNetworkSimulator.cpp)
+target_link_libraries(StarNetworkSimulator LINK_PUBLIC PracticalSocket)

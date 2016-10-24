@@ -1,0 +1,2 @@
+add_library(PracticalSocket PracticalSocket.cpp)
+target_include_directories(PracticalSocket PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
