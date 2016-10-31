@@ -1,2 +1,3 @@
-add_executable(StarNetworkSimulator StarNetworkSimulator.cpp)
+add_executable(StarNetworkSimulator StarNetworkSimulator.cpp Frame.cpp)
+set_property(TARGET StarNetworkSimulator PROPERTY CXX_STANDARD 11)
 target_link_libraries(StarNetworkSimulator LINK_PUBLIC PracticalSocket)
