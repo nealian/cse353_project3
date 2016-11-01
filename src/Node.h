@@ -6,9 +6,11 @@
 
 class Node {
 public:
+    // Methods
+    void write_output(std::string to_write);
 
     // Constructors
-    Node(uint8_t num) : _num {num} {};
+    Node(uint8_t num) : _num {num}, _infile(("Node" + std::to_string(num) + "Input.txt").c_str()), _outfile(("Node" + std::to_string(num) + "Output.txt").c_str()) {};
     Node(const Node&) = delete;
     Node(Node&&) = delete;
 protected:
