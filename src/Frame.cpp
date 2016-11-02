@@ -25,7 +25,7 @@ std::string Frame::raw()
 {
     std::string src_raw (1, (char) _SRC); // Using the fill(n, char) constructor
     std::string dst_raw (1, (char) _DST);
-    std::string size_raw (1, (char) _DATA.length());
+    std::string size_raw (1, (char) size());
 
     if (_priority == 0) {
         return src_raw + dst_raw + size_raw + _DATA;

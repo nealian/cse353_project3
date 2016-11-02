@@ -3,6 +3,8 @@
 #include <string>
 #include <cstdint>
 
+#define MAX_FRAME_SZ 258 // 1 byte for each SRC, DST, and SIZE/ACK, and 255 bytes for DATA.
+
 class Frame {
 public:
     // Getters
