@@ -14,6 +14,7 @@
 #include <functional>
 #include <iostream>
 #include <list>
+#include <unordered_map>
 #include <memory>
 #include <mutex>
 #include <sstream>
@@ -27,10 +28,20 @@
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include "Frame.h"
 
 namespace FreeLunch { // ok I'm just being silly, we can get rid of this in prod :)
 
-namespace Switch {
+namespace Always {
+
+class Switch {
+public:
+
+protected:
+  sync_queue<Frame> frame_buffer;
+  // <port, _num>? This may need to change.
+  std::unordered_map<uint8_t, uint8_t> switch_table;
+};
 
 // TODO: rewrite this queue to be lockfree if we have time
 /**
@@ -76,6 +87,6 @@ public:
   ~AtomicWriter() { stream << st.str(); }
 };
 
-} // namespace Switch
+} // namespace Always
 
 } // namespace FreeLunch

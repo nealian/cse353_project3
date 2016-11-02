@@ -7,7 +7,7 @@
 
 namespace FreeLunch {
 
-namespace Switch {
+namespace Always {
 
 template <typename T>
 void sync_queue<T>::put(const T &val) {
@@ -31,6 +31,6 @@ void sync_queue<T>::peek(T &val) {
   val = q.front();
 }
 
-} // namespace Switch
+} // namespace Always
 
 } // namespace FreeLunch
