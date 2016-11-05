@@ -37,7 +37,7 @@ namespace Always {
 class DefaultInt {
   DefaultInt() : _num {0} {};
   DefaultInt(int num) : _num {num} {};
-  std::bool operator <(const DefaultInt& j) {return _num < j._num;};
+  bool operator <(const DefaultInt& j) {return _num < j._num;};
 private:
   int _num;
 };
