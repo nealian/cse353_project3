@@ -10,14 +10,24 @@ namespace FreeLunch {
 namespace Always {
 
 template <typename S, typename T>
-void sync_queue<S, T>::put(const T &val) {
+void sync_queue<S, T>::put(const Tuple<S, T> &val) {
   std::lock_guard<std::mutex> lck{mtx};
   q.push(val);
   cond.notify_all();
 }
 
 template <typename S, typename T>
-void sync_queue<S, T>::get(T &val) {
+void sync_queue<S, T>::put(const T& val) {
+  std::lock_guard<std::mutex> lck{mtx};
+  S priority = new S();
+  Tuple<S, T> to_push = { priority, val };
+  q.push(to_push);
+
+  cond.notify_all();
+}
+
+template <typename S, typename T>
+void sync_queue<S, T>::get(Tuple<S, T> &val) {
   std::unique_lock<std::mutex> lck{mtx};
   cond.wait(lck,[this]{ return !q.empty(); });
   val = q.front();
@@ -25,7 +35,7 @@ void sync_queue<S, T>::get(T &val) {
 }
 
 template <typename S, typename T>
-void sync_queue<S, T>::peek(T &val) {
+void sync_queue<S, T>::peek(Tuple<S, T> &val) {
   std::unique_lock<std::mutex> lck{mtx};
   cond.wait(lck,[this]{ return !q.empty(); });
   val = q.front();

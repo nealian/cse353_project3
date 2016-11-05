@@ -34,17 +34,28 @@ namespace FreeLunch { // ok I'm just being silly, we can get rid of this in prod
 
 namespace Always {
 
+class DefaultInt {
+  DefaultInt() : _num {0} {};
+  DefaultInt(int num) : _num {num} {};
+  std::bool operator <(const DefaultInt& j) {return _num < j._num;};
+private:
+  int _num;
+};
+
 template <typename S, typename T>
 struct Tuple {
   S s;
   T t;
+  bool operator <(const Tuple t2) {
+    return s < t2.s;
+  }
 };
 
 class Switch {
 public:
 
 protected:
-  sync_queue<Frame> frame_buffer; // this needs to be a tuple
+  sync_queue<DefaultInt, Frame> frame_buffer; // this needs to be a tuple
   // <port, _num>? This may need to change.
   std::unordered_map<uint8_t, uint8_t> switch_table;
 };
@@ -56,25 +67,19 @@ protected:
 template <typename S, typename T>
 class sync_queue {
 public:
+  void put(const Tuple<S, T>& val);
+  void put(const Tuple<S, T>&& val);
   void put(const T& val);
-  void put(const T&& val);
-  void get(T& val);
-  void peek(T& val);
+  void get(Tuple<S, T>& val);
+  void peek(Tuple<S, T>& val);
   bool empty() { return q.empty(); }
 private:
   std::mutex mtx;
   std::condition_variable cond;
-  std::priority_queue<Tuple<S, T>, vector<Tuple<S, T>>, CompareTuple<S, T> q;
+  std::priority_queue<Tuple<S, T>> q;
 };
 
-template <typename S, typename T>
-class CompareTuple {
-public:
-  bool operator()(Tuple<S, T>& t1, Tuple<S, T>& t2) {
-    if (t1.s < t2.s) return true;
-    return false;
-  }
-};
+
 
 
 /**
