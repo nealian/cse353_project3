@@ -34,11 +34,17 @@ namespace FreeLunch { // ok I'm just being silly, we can get rid of this in prod
 
 namespace Always {
 
+template <typename S, typename T>
+struct Tuple {
+  S s;
+  T t;
+};
+
 class Switch {
 public:
 
 protected:
-  sync_queue<Frame> frame_buffer;
+  sync_queue<Frame> frame_buffer; // this needs to be a tuple
   // <port, _num>? This may need to change.
   std::unordered_map<uint8_t, uint8_t> switch_table;
 };
@@ -58,7 +64,15 @@ public:
 private:
   std::mutex mtx;
   std::condition_variable cond;
-  std::priority_queue<T> q;
+  std::priority_queue<T, vector<T>, CompareTuple> q;
+};
+
+class CompareTuple {
+public:
+  bool operator()(Tuple& t1, Tuple& t2) {
+    if (t1.s < t2.s) return true;
+    return false;
+  }
 };
 
 
