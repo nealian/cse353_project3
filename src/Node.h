@@ -23,6 +23,8 @@ public:
     Frame read_from_socket();
     Frame read_from_input();
     bool is_mine(Frame to_check);
+    void set_port(unsigned short port);
+    void handle_frame(Frame frame);
 
     // Constructors
     Node(uint8_t num) : _num {num}, _infile(("Node" + std::to_string((unsigned int) num) + "Input.txt").c_str()), _outfile(("Node" + std::to_string((unsigned int) num) + "Output.txt").c_str()) {};

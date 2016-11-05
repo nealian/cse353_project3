@@ -21,7 +21,7 @@ Frame Node::read_from_input() {
         std::getline(_infile,input_line);
     }
 
-    istringstream input_line_stream(input_line);
+    std::istringstream input_line_stream(input_line);
     uint8_t dst;
     char colon; // Garbage for the separator
 
@@ -44,4 +44,16 @@ Frame Node::read_from_socket() throw(NodeException) {
 
 bool Node::is_mine(Frame to_check) {
     return to_check.dst() == _num;
+}
+
+void Node::set_port(unsigned short port) {
+    _switch_socket = new TCPSocket("localhost", port);
+}
+
+void Node::handle_frame(Frame frame) {
+    if(frame.src() == 0) { // Control frame from the switch
+
+    } else if(is_mine(frame)) {
+
+    }
 }
