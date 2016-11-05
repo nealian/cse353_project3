@@ -53,7 +53,7 @@ protected:
 /**
  * from Stroustrup section 42.3.4
  */
-template <typename T>
+template <typename S, typename T>
 class sync_queue {
 public:
   void put(const T& val);
@@ -64,12 +64,13 @@ public:
 private:
   std::mutex mtx;
   std::condition_variable cond;
-  std::priority_queue<T, vector<T>, CompareTuple> q;
+  std::priority_queue<Tuple<S, T>, vector<Tuple<S, T>>, CompareTuple<S, T> q;
 };
 
+template <typename S, typename T>
 class CompareTuple {
 public:
-  bool operator()(Tuple& t1, Tuple& t2) {
+  bool operator()(Tuple<S, T>& t1, Tuple<S, T>& t2) {
     if (t1.s < t2.s) return true;
     return false;
   }
