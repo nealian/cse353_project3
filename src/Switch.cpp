@@ -12,7 +12,7 @@ namespace Always {
 template <typename T>
 void sync_queue<T>::put(const T &val) {
   std::lock_guard<std::mutex> lck{mtx};
-  q.push_back(val);
+  q.push(val);
   cond.notify_all();
 }
 
@@ -21,7 +21,7 @@ void sync_queue<T>::get(T &val) {
   std::unique_lock<std::mutex> lck{mtx};
   cond.wait(lck,[this]{ return !q.empty(); });
   val = q.front();
-  q.pop_front();
+  q.pop();
 }
 
 template <typename T>

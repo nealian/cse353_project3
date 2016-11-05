@@ -13,7 +13,6 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
-#include <list>
 #include <unordered_map>
 #include <memory>
 #include <mutex>
@@ -26,6 +25,7 @@
 #include <lib/PracticalSocket.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#include <queue>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include "Frame.h"
@@ -58,7 +58,7 @@ public:
 private:
   std::mutex mtx;
   std::condition_variable cond;
-  list<T> q;
+  std::priority_queue<T> q;
 };
 
 
