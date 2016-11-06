@@ -58,11 +58,10 @@ class Switch {
 public:
   std::string serv_addr = "127.0.0.1";
   uint8_t default_port = 10000;
-  TCPServerSocket default_sock;
   AtomicWriter w;
 
   void handle_new_connection();
-  void handle_client(std::unique_ptr<TCPServerSocket> sock);
+  void handle_client(std::unique_ptr<TCPSocket> sock);
 
 protected:
   sync_queue<DefaultInt, Frame> frame_buffer; // this needs to be a tuple

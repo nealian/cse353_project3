@@ -42,10 +42,10 @@ void sync_queue<S, T>::peek(Tuple<S, T> &val) {
 
 void Switch::handle_new_connection() {
   try {
-    this->default_sock(this->default_port);
+    TCPServerSocket default_sock(this->default_port);
     std::future<Frame> fut = std::async(std::launch::async, // ensures a separate thread is spawned
       Switch::handle_client, // handle to function we want to call
-      std::unique_ptr<TCPServerSocket> sock.accept()); // arg to that function
+      std::unique_ptr<TCPSocket>(default_sock.accept())); // arg to that function
 
     _futures.push_back(fut);
 
@@ -56,7 +56,7 @@ void Switch::handle_new_connection() {
 
 }
 
-void Switch::handle_client(std::unique_ptr<TCPServerSocket> sock) {
+void Switch::handle_client(std::unique_ptr<TCPSocket> sock) {
   AtomicWriter w;
   try {
     sock->getForeignAddress();
