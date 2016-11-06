@@ -59,7 +59,8 @@ void Switch::handle_new_connection() {
 void Switch::handle_client(std::unique_ptr<TCPSocket> sock) {
   AtomicWriter w;
   try {
-    sock->getForeignAddress();
+    auto addr = sock->getForeignAddress();
+    auto port = static_cast<uint8_t>(sock->getForeignPort());
   } catch (SocketException e) {
     w << e.what() << std::endl;
   }
@@ -69,7 +70,6 @@ void Switch::handle_client(std::unique_ptr<TCPSocket> sock) {
     int msg_size;
 
     while ((msg_size = sock->recv(buffer, RCVBUFSIZE)) > 0) {
-      sock->
       /// do things here...
     }
   }
