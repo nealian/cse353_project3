@@ -65,13 +65,11 @@ void Switch::handle_client(std::unique_ptr<TCPSocket> sock) {
     w << e.what() << std::endl;
   }
 
-  if (_switch_mtx.try_lock()) {
-    char buffer[RCVBUFSIZE];
-    int msg_size;
+  char buffer[RCVBUFSIZE];
+  int msg_size;
 
-    while ((msg_size = sock->recv(buffer, RCVBUFSIZE)) > 0) {
-      /// do things here...
-    }
+  while ((msg_size = sock->recv(buffer, RCVBUFSIZE)) > 0) {
+    /// do things here...
   }
 }
 
