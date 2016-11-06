@@ -22,7 +22,6 @@ void sync_queue<S, T>::put(const T& val) {
   S priority = new S();
   Tuple<S, T> to_push = { priority, val };
   q.push(to_push);
-
   cond.notify_all();
 }
 
@@ -39,6 +38,15 @@ void sync_queue<S, T>::peek(Tuple<S, T> &val) {
   std::unique_lock<std::mutex> lck{mtx};
   cond.wait(lck,[this]{ return !q.empty(); });
   val = q.front();
+}
+
+void Switch::handle_new_connection() {
+  try {
+    this->default_sock(this->default_port);
+  } catch (SocketException& e) {
+    w << e.what() << std::endl;
+  }
+
 }
 
 } // namespace Always

@@ -53,11 +53,20 @@ struct Tuple {
 
 class Switch {
 public:
+  std::string serv_addr = "127.0.0.1";
+  uint8_t default_port = 10000;
+  TCPServerSocket default_sock;
+  AtomicWriter w;
+
+  void handle_new_connection();
 
 protected:
   sync_queue<DefaultInt, Frame> frame_buffer; // this needs to be a tuple
   // <port, _num>? This may need to change.
   std::unordered_map<uint8_t, uint8_t> switch_table;
+private:
+  std::mutex _switch_mtx;
+  std::condition_variable _switch_cond;
 };
 
 // TODO: rewrite this queue to be lockfree if we have time
