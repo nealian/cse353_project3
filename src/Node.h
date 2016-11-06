@@ -25,6 +25,8 @@ public:
     bool is_mine(Frame to_check);
     void set_port(unsigned short port);
     void handle_frame(Frame frame);
+    void send_loop();
+    void receive_loop();
 
     // Constructors
     Node(uint8_t num) : _num {num}, _infile(("Node" + std::to_string((unsigned int) num) + "Input.txt").c_str()), _outfile(("Node" + std::to_string((unsigned int) num) + "Output.txt").c_str()) {};
@@ -35,4 +37,5 @@ protected:
     std::ifstream _infile;
     std::ofstream _outfile;
     TCPSocket *_switch_socket;
+    bool _ack;
 };

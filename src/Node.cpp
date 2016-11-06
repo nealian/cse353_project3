@@ -1,5 +1,7 @@
 #include "Node.h"
 #include <sstream>
+#include <thread>
+#include <chrono>
 
 void Node::write_output(Frame to_write) {
     _outfile << to_write.src() << ":" << to_write.data();
@@ -51,9 +53,35 @@ void Node::set_port(unsigned short port) {
 }
 
 void Node::handle_frame(Frame frame) {
-    if(frame.src() == 0) { // Control frame from the switch
-
+    if(frame.src() == 0) { // Control frame from the switch; change TCP port to the port specified
+        // in the data (in this case, actually made into a string rather than raw bytes!
+        istringstream frame_data(frame.data());
+        unsigned short port_num;
+        frame_data >> port_num;
+        set_port(port_num);
     } else if(is_mine(frame)) {
-
+        if(frame.size() == 0) { // Frame is an acknowledgement
+            _ack = true;
+            // Just let the frame be deleted
+        } else { // Normal data frame
+            write_output(frame);
+            send_acknowledgement(frame);
+        }
     }
+}
+
+void Node::send_loop() {
+    while(not _infile.eof()) {
+        Frame current_frame = read_from_input();
+        _ack = false;
+        while(not _ack) { // Send until acknowledged
+            write_to_socket(current_frame);
+            std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Sleep for half a second
+            // before resending
+        }
+    }
+}
+
+void Node::receive_loop() {
+
 }

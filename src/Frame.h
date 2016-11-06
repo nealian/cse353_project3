@@ -21,7 +21,7 @@ public:
     Frame(std::string contents);
     Frame(uint8_t src, uint8_t dst, std::string data): _SRC {src}, _DST {dst}, _DATA {data} {};
     Frame(const Frame&) = delete;
-    Frame(Frame&&) = delete;
+    Frame(Frame&&) = default;
 
 protected:
     uint8_t _SRC;
