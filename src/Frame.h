@@ -22,7 +22,7 @@ public:
     Frame(uint8_t src, uint8_t dst, std::string data): _SRC {src}, _DST {dst}, _DATA {data}, _priority {0} {};
     Frame(uint8_t src, uint8_t dst, std::string data, uint8_t priority) : _SRC {src}, _DST {dst}, _DATA {data}, _priority {priority} {}
     Frame(const Frame&) = delete;
-    Frame(Frame&&) = delete;
+    Frame(Frame&&) = default;
 
     // Operators
     bool operator <(const Frame f2);
