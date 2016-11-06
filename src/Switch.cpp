@@ -29,7 +29,7 @@ template <typename S, typename T>
 void sync_queue<S, T>::get(Tuple<S, T> &val) {
   std::unique_lock<std::mutex> lck{mtx};
   cond.wait(lck,[this]{ return !q.empty(); });
-  val = q.front();
+  val = q.top();
   q.pop();
 }
 
@@ -37,16 +37,42 @@ template <typename S, typename T>
 void sync_queue<S, T>::peek(Tuple<S, T> &val) {
   std::unique_lock<std::mutex> lck{mtx};
   cond.wait(lck,[this]{ return !q.empty(); });
-  val = q.front();
+  val = q.top();
 }
 
 void Switch::handle_new_connection() {
   try {
     this->default_sock(this->default_port);
+    std::future<Frame> fut = std::async(std::launch::async, // ensures a separate thread is spawned
+      Switch::handle_client, // handle to function we want to call
+      std::unique_ptr<TCPServerSocket> sock.accept()); // arg to that function
+
+    _futures.push_back(fut);
+
+
   } catch (SocketException& e) {
     w << e.what() << std::endl;
   }
 
+}
+
+void Switch::handle_client(std::unique_ptr<TCPServerSocket> sock) {
+  AtomicWriter w;
+  try {
+    sock->getForeignAddress();
+  } catch (SocketException e) {
+    w << e.what() << std::endl;
+  }
+
+  if (_switch_mtx.try_lock()) {
+    char buffer[RCVBUFSIZE];
+    int msg_size;
+
+    while ((msg_size = sock->recv(buffer, RCVBUFSIZE)) > 0) {
+      sock->
+      /// do things here...
+    }
+  }
 }
 
 } // namespace Always

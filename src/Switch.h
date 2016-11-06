@@ -12,6 +12,7 @@
 #include <cstring>
 #include <fstream>
 #include <functional>
+#include <future>
 #include <iostream>
 #include <unordered_map>
 #include <memory>
@@ -22,17 +23,19 @@
 #include <vector>
 #include <queue>
 #include <arpa/inet.h>
-#include <lib/PracticalSocket.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <queue>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include "Frame.h"
+#include "PracticalSocket.h"
 
 namespace FreeLunch { // ok I'm just being silly, we can get rid of this in prod :)
 
 namespace Always {
+
+const int RCVBUFSIZE = 2048;
 
 class DefaultInt {
   DefaultInt() : _num {0} {};
@@ -59,6 +62,7 @@ public:
   AtomicWriter w;
 
   void handle_new_connection();
+  void handle_client(std::unique_ptr<TCPServerSocket> sock);
 
 protected:
   sync_queue<DefaultInt, Frame> frame_buffer; // this needs to be a tuple
@@ -67,6 +71,7 @@ protected:
 private:
   std::mutex _switch_mtx;
   std::condition_variable _switch_cond;
+  std::vector<std::future<Frame>> _futures;
 };
 
 // TODO: rewrite this queue to be lockfree if we have time
