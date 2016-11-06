@@ -59,17 +59,15 @@ void Switch::handle_new_connection() {
 void Switch::handle_client(std::unique_ptr<TCPSocket> sock) {
   AtomicWriter w;
   try {
-    auto addr = sock->getForeignAddress();
-    auto port = static_cast<uint8_t>(sock->getForeignPort());
+    auto address = sock->getForeignAddress();
+    default_port = static_cast<uint8_t>(sock->getForeignPort());
+
+    TCPSocket sock(address, default_port);
+    sock.send(static_cast<void *>(default_port), sizeof(default_port)); // suspicious of this cast...hack?
+    sock.cleanUp(); // not sure if this destroys?
+
   } catch (SocketException e) {
     w << e.what() << std::endl;
-  }
-
-  char buffer[RCVBUFSIZE];
-  int msg_size;
-
-  while ((msg_size = sock->recv(buffer, RCVBUFSIZE)) > 0) {
-    /// do things here...
   }
 }
 

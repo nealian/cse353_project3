@@ -57,7 +57,7 @@ struct Tuple {
 class Switch {
 public:
   std::string serv_addr = "127.0.0.1";
-  uint8_t default_port = 10000;
+  uint8_t default_port = 0;
   AtomicWriter w;
 
   void handle_new_connection();
