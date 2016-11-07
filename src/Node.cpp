@@ -2,6 +2,20 @@
 #include <sstream>
 #include <thread>
 
+#if defined(__CYGWIN__) // I really want to use std::to_string() as defined in the C++11 standard,
+// but no, Cygwin doesn't support it, and I'm building on Windows or Linux depending on where I am.
+namespace std {
+  template<typename T>
+  std::string to_string(const T &n) {
+    std::ostringstream stm;
+    stm << n;
+    return stm.str();
+  }
+}
+#endif
+
+bool Node::_all_finished = false;
+
 void Node::write_output(Frame to_write) {
   _outfile << to_write.src() << ":" << to_write.data();
 }
@@ -82,17 +96,23 @@ void Node::send_loop() {
 }
 
 void Node::receive_loop() {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
-  while (true) {// eventually give this a flag modifiable by the main() class/function
+  while (not _all_finished) {
     Frame received_fame = read_from_socket();
     handle_frame(received_fame);
   }
-#pragma clang diagnostic pop
 }
 
-Node::Node(uint8_t num) : _num {num}, _infile(("Node" + std::to_string((unsigned int) num) + "Input.txt").c_str()), _outfile(("Node" + std::to_string((unsigned int) num) + "Output.txt").c_str()) {
-  // Make initial connection and set new port
-  // Create receiver handler thread
-  // Create sender handler thread
+Node::Node(uint8_t num) :
+    _num {num},
+    _infile(("Node" + std::to_string((unsigned int) num) + "Input.txt").c_str()),
+    _outfile(("Node" + std::to_string((unsigned int) num) + "Output.txt").c_str()) {
+  // TODO Make initial connection and set new port
+  std::thread receive_thread(Node::receive_loop); // TODO fix this?
+  std::thread send_thread(Node::send_loop);
+  receive_thread.detach();
+  send_thread.detach();
+}
+
+void Node::set_finished() {
+  _all_finished = true;
 }

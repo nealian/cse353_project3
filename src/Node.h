@@ -27,6 +27,7 @@ public:
   void handle_frame(Frame frame);
   void send_loop();
   void receive_loop();
+  void set_finished();
 
   // Constructors
   Node(uint8_t num);
@@ -38,4 +39,5 @@ protected:
   std::ofstream _outfile;
   TCPSocket *_switch_socket;
   bool _ack;
+  static bool _all_finished;
 };
