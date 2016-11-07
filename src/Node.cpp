@@ -1,6 +1,7 @@
 #include "Node.h"
 #include <sstream>
 #include <thread>
+#include <iostream>
 
 #if defined(__CYGWIN__) // I really want to use std::to_string() as defined in the C++11 standard,
 // but no, Cygwin doesn't support it, and I'm building on Windows or Linux depending on where I am.
@@ -102,14 +103,32 @@ void Node::receive_loop() {
   }
 }
 
-Node::Node(uint8_t num) :
+Node::Node(uint8_t num, unsigned short switch_tcp_port) :
     _num {num},
     _infile(("Node" + std::to_string((unsigned int) num) + "Input.txt").c_str()),
     _outfile(("Node" + std::to_string((unsigned int) num) + "Output.txt").c_str()) {
-  // TODO Make initial connection and set new port
-  std::thread receive_thread(Node::receive_loop); // TODO fix this?
-  std::thread send_thread(Node::send_loop);
+  // Connection negotiation
+  _switch_socket = new TCPSocket("localhost", switch_tcp_port);
+  int attempts = 0;
+  while (attempts < 5 and _switch_socket->getForeignPort() == switch_tcp_port) {
+    try {
+      char buf[128];
+      _switch_socket->recv(buf, 127);
+      unsigned char new_port = atoi(buf);
+      _switch_socket = new TCPSocket("localhost", new_port);
+    } catch (SocketException &e) {
+      string s(e.what());
+      std::cerr << s << std::endl;
+      std::this_thread::sleep_for(std::chrono::milliseconds(attempts * 100));
+    }
+  }
+
+  // Start receive loop in new thread
+  std::thread receive_thread(Node::receive_loop, this);
   receive_thread.detach();
+
+  // Start send loop in new thread
+  std::thread send_thread(Node::send_loop, this);
   send_thread.detach();
 }
 

@@ -30,14 +30,14 @@ public:
   void set_finished();
 
   // Constructors
-  Node(uint8_t num);
+  Node(uint8_t num, unsigned short switch_tcp_port);
   Node(const Node&) = delete;
   Node(Node&&) = delete;
 protected:
-  uint8_t _num;
+  const uint8_t _num;
   std::ifstream _infile;
   std::ofstream _outfile;
-  TCPSocket *_switch_socket;
+  TCPSocket * _switch_socket;
   bool _ack;
   static bool _all_finished;
 };
