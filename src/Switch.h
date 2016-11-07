@@ -61,6 +61,7 @@ public:
   AtomicWriter w;
 
   void handle_new_connection();
+  void listener();
   void handle_client(std::unique_ptr<TCPSocket> sock);
 
 protected:

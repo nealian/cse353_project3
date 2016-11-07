@@ -50,6 +50,7 @@ void Switch::handle_new_connection() {
     _futures.push_back(fut);
 
 
+
   } catch (SocketException& e) {
     w << e.what() << std::endl;
   }
@@ -65,9 +66,18 @@ void Switch::handle_client(std::unique_ptr<TCPSocket> sock) {
     my_port_ostringstream << my_port;
     std::string my_port_as_string = my_port_ostringstream.str();
 
-    sock->send(static_cast<void *>(my_port_as_string.c_str()), my_port_as_string.length()); // suspicious of this cast...hack?
+    sock->send(static_cast<void *>(my_port_as_string.c_str()), my_port_as_string.length());
     sock->cleanUp(); // not sure if this destroys?
 
+  } catch (SocketException e) {
+    w << e.what() << std::endl;
+  }
+}
+
+void Switch::listener() {
+  AtomicWriter w;
+  try {
+    // stuff
   } catch (SocketException e) {
     w << e.what() << std::endl;
   }
