@@ -1,6 +1,5 @@
-#ifndef _STARNETWORKSIMULATOR_H
-#define _STARNETWORKSIMULATOR_H
+#pragma once
 
 #include "PracticalSocket.h"
-
-#endif
+#include "Frame.h"
+#include "Node.h"
