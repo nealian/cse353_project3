@@ -1,31 +1,26 @@
 #include "Frame.h"
 
 /* Getters */
-uint8_t Frame::src()
-{
-    return _SRC;
+uint8_t Frame::src() {
+  return _SRC;
 }
 
-uint8_t Frame::dst()
-{
-    return _DST;
+uint8_t Frame::dst() {
+  return _DST;
 }
 
-uint8_t Frame::size()
-{
-    return _DATA.length();
+uint8_t Frame::size() {
+  return _DATA.length();
 }
 
-std::string Frame::data()
-{
-    return _DATA;
+std::string Frame::data() {
+  return _DATA;
 }
 
-std::string Frame::raw()
-{
-    std::string src_raw (1, (char) _SRC); // Using the fill(n, char) constructor
-    std::string dst_raw (1, (char) _DST);
-    std::string size_raw (1, (char) size());
+std::string Frame::raw() {
+  std::string src_raw(1, (char) _SRC); // Using the fill(n, char) constructor
+  std::string dst_raw(1, (char) _DST);
+  std::string size_raw(1, (char) size());
 
     if (_priority == 0) {
         return src_raw + dst_raw + size_raw + _DATA;
@@ -39,9 +34,8 @@ std::string Frame::raw()
 
 
 /* Setters */
-void Frame::clear()
-{
-    _DATA.clear();
+void Frame::clear() {
+  _DATA.clear();
 }
 
 
