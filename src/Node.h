@@ -20,7 +20,7 @@ public:
   void write_output(Frame to_write);
   void write_to_socket(Frame to_write);
   void send_acknowledgement(Frame to_ack);
-  Frame read_from_socket();
+  Frame read_from_socket() throw (NodeException);
   Frame read_from_input();
   bool is_mine(Frame to_check);
   void set_port(unsigned short port);

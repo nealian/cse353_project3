@@ -7,24 +7,24 @@
 
 class Frame {
 public:
-    // Getters
-    uint8_t src();
-    uint8_t dst();
-    uint8_t size();
-    std::string data();
-    std::string raw();
+  // Getters
+  uint8_t src();
+  uint8_t dst();
+  uint8_t size();
+  std::string data();
+  std::string raw();
 
-    // Setters
-    void clear();
+  // Setters
+  void clear();
 
-    // Constructors
-    Frame(std::string contents);
-    Frame(uint8_t src, uint8_t dst, std::string data): _SRC {src}, _DST {dst}, _DATA {data} {};
-    Frame(const Frame&) = delete;
-    Frame(Frame&&) = default;
+  // Constructors
+  Frame(std::string contents);
+  Frame(uint8_t src, uint8_t dst, std::string data) : _SRC{src}, _DST{dst}, _DATA{data} {};
+  Frame(const Frame &) = default; // For function calls
+  Frame(Frame &&) = default; // For return values
 
 protected:
-    uint8_t _SRC;
-    uint8_t _DST;
-    std::string _DATA;
+  uint8_t _SRC;
+  uint8_t _DST;
+  std::string _DATA;
 };

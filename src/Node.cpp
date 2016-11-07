@@ -1,7 +1,6 @@
 #include "Node.h"
 #include <sstream>
 #include <thread>
-#include <chrono>
 
 void Node::write_output(Frame to_write) {
   _outfile << to_write.src() << ":" << to_write.data();
@@ -86,14 +85,14 @@ void Node::receive_loop() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
   while (true) {// eventually give this a flag modifiable by the main() class/function
-    Frame rcvd_fame = read_from_socket();
-    handle_frame(rcvd_fame);
+    Frame received_fame = read_from_socket();
+    handle_frame(received_fame);
   }
 #pragma clang diagnostic pop
 }
 
 Node::Node(uint8_t num) : _num {num}, _infile(("Node" + std::to_string((unsigned int) num) + "Input.txt").c_str()), _outfile(("Node" + std::to_string((unsigned int) num) + "Output.txt").c_str()) {
   // Make initial connection and set new port
-  // Create reciever handler thread
+  // Create receiver handler thread
   // Create sender handler thread
 }
