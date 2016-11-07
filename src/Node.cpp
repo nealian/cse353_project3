@@ -91,3 +91,9 @@ void Node::receive_loop() {
   }
 #pragma clang diagnostic pop
 }
+
+Node::Node(uint8_t num) : _num {num}, _infile(("Node" + std::to_string((unsigned int) num) + "Input.txt").c_str()), _outfile(("Node" + std::to_string((unsigned int) num) + "Output.txt").c_str()) {
+  // Make initial connection and set new port
+  // Create reciever handler thread
+  // Create sender handler thread
+}

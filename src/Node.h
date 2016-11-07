@@ -29,7 +29,7 @@ public:
   void receive_loop();
 
   // Constructors
-  Node(uint8_t num) : _num {num}, _infile(("Node" + std::to_string((unsigned int) num) + "Input.txt").c_str()), _outfile(("Node" + std::to_string((unsigned int) num) + "Output.txt").c_str()) {};
+  Node(uint8_t num);
   Node(const Node&) = delete;
   Node(Node&&) = delete;
 protected:
