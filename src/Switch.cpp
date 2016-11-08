@@ -73,7 +73,7 @@ void Switch::handle_client(std::shared_ptr<TCPSocket> sock) {
     my_port_ostringstream << my_port;
     std::string my_port_as_string = my_port_ostringstream.str();
 
-    sock->send((void *)(my_port_as_string.c_str()), my_port_as_string.length());
+    sock->send(static_cast<const void *>(my_port_as_string.c_str()), my_port_as_string.length());
     sock->cleanUp(); // not sure if this destroys?
 
     std::shared_ptr<TCPSocket> newsock(newserv.accept());
@@ -97,8 +97,12 @@ void Switch::process_queue() {
         if (switch_table.count(frame.dst()) > 0) {
           auto dst_sock = switch_table[frame.dst()];
           // send to dst
+          dst_sock.get()->send(static_cast<const void *>(frame.raw().c_str()), frame.size());
         } else {
           // broadcast
+          for (auto b : this->broadcast_sockets) {
+            b.get()->send(static_cast<const void *>(frame.raw().c_str()), frame.size());
+          }
         }
       } else {
         std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Sleep for half a second
