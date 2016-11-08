@@ -6,14 +6,12 @@
 #pragma once
 
 // trim this down later;
-#include <atomic>
+//#include <atomic>
 #include <algorithm>
-#include <cerrno>
 #include <condition_variable>
 #include <cstring>
 #include <fstream>
 #include <functional>
-#include <future>
 #include <iostream>
 #include <unordered_map>
 #include <memory>
@@ -23,12 +21,6 @@
 #include <thread>
 #include <vector>
 #include <queue>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <queue>
-#include <sys/types.h>
-#include <sys/socket.h>
 #include "Frame.h"
 #include "PracticalSocket.h"
 
@@ -101,5 +93,5 @@ protected:
 private:
   std::mutex _switch_mtx;
   std::condition_variable _switch_cond;
-  std::vector<std::future<Frame>> _futures;
+  //std::vector<std::future<Frame>> _futures;
 };
