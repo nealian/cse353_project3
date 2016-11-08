@@ -42,7 +42,7 @@ public:
   void put(const T& val);
   void put(const T&& val);
   void get(T& val);
-  Frame get();
+  T get();
   void peek(T& val);
   bool empty() { return q.empty(); }
 private:
@@ -83,7 +83,7 @@ const int RCVBUFSIZE = 2048;
 
 class Switch {
 public:
-  bool frame_buf_flag = true;
+  bool transmissions_complete = false;
   std::string serv_addr = "127.0.0.1";
   uint8_t default_port = 0;
   AtomicWriter w;

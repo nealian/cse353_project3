@@ -28,10 +28,10 @@ void sync_queue<T>::get(T &val) {
 }
 
 template <typename T>
-Frame sync_queue<T>::get() {
+T sync_queue<T>::get() {
   std::unique_lock<std::mutex> lck{mtx};
   cond.wait(lck,[this]{ return !q.empty(); });
-  Frame ret = q.top();
+  auto ret = q.top();
   q.pop();
   return ret;
 }
@@ -90,7 +90,7 @@ void Switch::handle_client(std::shared_ptr<TCPSocket> sock) {
 void Switch::process_queue() {
   AtomicWriter w;
   try {
-    while (this->frame_buf_flag) {
+    while (not this->transmissions_complete) {
       if (!frame_buffer.empty()) {
         auto frame = frame_buffer.get();
 
@@ -111,7 +111,7 @@ void Switch::process_queue() {
 
 void Switch::receive_loop(std::shared_ptr<TCPSocket> sock) {
   try {
-    while (this->frame_buf_flag) {
+    while (not this->transmissions_complete) {
       // Receive and handle frames, modifying broadcast_sockets and switch_table as necessary
       char buffer[MAX_FRAME_SZ+1];
       std::string buffer_string;
