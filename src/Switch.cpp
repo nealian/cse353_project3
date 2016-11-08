@@ -5,36 +5,30 @@
 
 #include "Switch.h"
 
-namespace FreeLunch {
+template <typename T>
+void sync_queue<T>::put(const T &val) {
+  std::lock_guard<std::mutex> lck{mtx}; // TODO what is this for?
+  q.push(val);
+  cond.notify_all();
+}
 
-namespace Always {
-
-template <typename S, typename T>
-void sync_queue<S, T>::put(const Tuple<S, T> &val) {
+template <typename T>
+void sync_queue<T>::put(const T& val) {
   std::lock_guard<std::mutex> lck{mtx};
   q.push(val);
   cond.notify_all();
 }
 
-template <typename S, typename T>
-void sync_queue<S, T>::put(const T& val) {
-  std::lock_guard<std::mutex> lck{mtx};
-  S priority = new S();
-  Tuple<S, T> to_push = { priority, val };
-  q.push(to_push);
-  cond.notify_all();
-}
-
-template <typename S, typename T>
-void sync_queue<S, T>::get(Tuple<S, T> &val) {
+template <typename T>
+void sync_queue<T>::get(T &val) {
   std::unique_lock<std::mutex> lck{mtx};
   cond.wait(lck,[this]{ return !q.empty(); });
   val = q.top();
   q.pop();
 }
 
-template <typename S, typename T>
-void sync_queue<S, T>::peek(Tuple<S, T> &val) {
+template <typename T>
+void sync_queue<T>::peek(T &val) {
   std::unique_lock<std::mutex> lck{mtx};
   cond.wait(lck,[this]{ return !q.empty(); });
   val = q.top();
@@ -82,7 +76,3 @@ void Switch::listener() {
     w << e.what() << std::endl;
   }
 }
-
-} // namespace Always
-
-} // namespace FreeLunch

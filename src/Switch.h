@@ -31,28 +31,7 @@
 #include "Frame.h"
 #include "PracticalSocket.h"
 
-namespace FreeLunch { // ok I'm just being silly, we can get rid of this in prod :)
-
-namespace Always {
-
 const int RCVBUFSIZE = 2048;
-
-class DefaultInt {
-  DefaultInt() : _num {0} {};
-  DefaultInt(int num) : _num {num} {};
-  bool operator <(const DefaultInt& j) {return _num < j._num;};
-private:
-  int _num;
-};
-
-template <typename S, typename T>
-struct Tuple {
-  S s;
-  T t;
-  bool operator <(const Tuple t2) {
-    return s < t2.s;
-  }
-};
 
 class Switch {
 public:
@@ -65,7 +44,7 @@ public:
   void handle_client(std::unique_ptr<TCPSocket> sock);
 
 protected:
-  sync_queue<DefaultInt, Frame> frame_buffer; // this needs to be a tuple
+  sync_queue<Frame> frame_buffer;
   // <port, _num>? This may need to change.
   std::unordered_map<uint8_t, uint8_t> switch_table;
 private:
@@ -78,19 +57,18 @@ private:
 /**
  * from Stroustrup section 42.3.4
  */
-template <typename S, typename T>
+template <typename T>
 class sync_queue {
 public:
-  void put(const Tuple<S, T>& val);
-  void put(const Tuple<S, T>&& val);
   void put(const T& val);
-  void get(Tuple<S, T>& val);
-  void peek(Tuple<S, T>& val);
+  void put(const T&& val);
+  void get(T& val);
+  void peek(T& val);
   bool empty() { return q.empty(); }
 private:
   std::mutex mtx;
   std::condition_variable cond;
-  std::priority_queue<Tuple<S, T>> q;
+  std::priority_queue<T> q;
 };
 
 
@@ -120,7 +98,3 @@ public:
   }
   ~AtomicWriter() { stream << st.str(); }
 };
-
-} // namespace Always
-
-} // namespace FreeLunch
