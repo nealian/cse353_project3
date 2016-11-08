@@ -55,7 +55,7 @@ void Switch::handle_new_connection() {
     _futures.push_back(fut);
 */
 
-    std::thread new_client_thread(Switch::handle_client, this, new_sock);
+    std::thread new_client_thread(&Switch::handle_client, this, new_sock);
     new_client_thread.detach();
 
   } catch (SocketException& e) {
@@ -79,7 +79,7 @@ void Switch::handle_client(std::shared_ptr<TCPSocket> sock) {
     std::shared_ptr<TCPSocket> newsock(newserv.accept());
 
     broadcast_sockets.push_back(newsock);
-    std::thread receive_thread(Switch::receive_loop, this, newsock);
+    std::thread receive_thread(&Switch::receive_loop, this, newsock);
     receive_thread.detach();
 
   } catch (SocketException e) {

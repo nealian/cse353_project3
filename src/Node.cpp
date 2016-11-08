@@ -124,11 +124,11 @@ Node::Node(uint8_t num, unsigned short switch_tcp_port) :
   }
 
   // Start receive loop in new thread
-  std::thread receive_thread(Node::receive_loop, this);
+  std::thread receive_thread(&Node::receive_loop, this);
   receive_thread.detach();
 
   // Start send loop in new thread
-  std::thread send_thread(Node::send_loop, this);
+  std::thread send_thread(&Node::send_loop, this);
   send_thread.detach();
 }
 
