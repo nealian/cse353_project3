@@ -80,8 +80,8 @@ void Switch::handle_client(std::unique_ptr<TCPSocket> sock) {
 void Switch::process_queue() {
   AtomicWriter w;
   try {
-    if (!frame_buffer.empty()) {
-      while (this->frame_buf_flag) {
+    while (this->frame_buf_flag) {
+      if (!frame_buffer.empty()) {
         auto frame = frame_buffer.get();
 
         if (switch_table.count(frame.dst()) > 0) {
@@ -90,9 +90,9 @@ void Switch::process_queue() {
         } else {
           // broadcast
         }
+      } else {
+        std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Sleep for half a second
       }
-    } else {
-      std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Sleep for half a second
     }
   } catch (SocketException e) {
     w << e.what() << std::endl;
