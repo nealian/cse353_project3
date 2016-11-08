@@ -43,11 +43,13 @@ public:
   void handle_new_connection();
   void process_queue();
   void handle_client(std::unique_ptr<TCPSocket> sock);
+  void receive_loop(TCPSocket &sock);
 
 protected:
   sync_queue<Frame> frame_buffer;
   // <port, _num>? This may need to change.
-  std::unordered_map<uint8_t, uint8_t> switch_table;
+  std::unordered_map<uint8_t, TCPSocket &> switch_table;
+  std::vector<TCPSocket &> broadcast_sockets;
 private:
   std::mutex _switch_mtx;
   std::condition_variable _switch_cond;

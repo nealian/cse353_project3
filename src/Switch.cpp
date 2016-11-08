@@ -63,14 +63,20 @@ void Switch::handle_new_connection() {
 void Switch::handle_client(std::unique_ptr<TCPSocket> sock) {
   AtomicWriter w;
   try {
-    TCPSocket newsock(serv_addr, default_port);
-    unsigned short my_port = (newsock.getForeignPort());
+    TCPServerSocket newserv(serv_addr, default_port);
+    unsigned short my_port = (newserv.getLocalPort());
     std::ostringstream my_port_ostringstream;
     my_port_ostringstream << my_port;
     std::string my_port_as_string = my_port_ostringstream.str();
 
     sock->send(static_cast<void *>(my_port_as_string.c_str()), my_port_as_string.length());
     sock->cleanUp(); // not sure if this destroys?
+
+    std::unique_ptr<TCPSocket> newsock = newserv.accept();
+
+    broadcast_sockets.push_back(*newsock);
+    std::future<Frame> fut = std::async(std::launch::async, Switch::receive_loop, *newsock);
+    _futures.push_back(fut);
 
   } catch (SocketException e) {
     w << e.what() << std::endl;
@@ -94,6 +100,17 @@ void Switch::process_queue() {
         std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Sleep for half a second
       }
     }
+  } catch (SocketException e) {
+    w << e.what() << std::endl;
+  }
+}
+
+void Switch::receive_loop(TCPSocket &sock) {
+  try {
+    while (this->frame_buf_flag) {
+      // Receive and handle frames, modifying broadcast_sockets and switch_table as necessary
+    }
+
   } catch (SocketException e) {
     w << e.what() << std::endl;
   }
