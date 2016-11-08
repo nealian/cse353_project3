@@ -28,6 +28,15 @@ void sync_queue<T>::get(T &val) {
 }
 
 template <typename T>
+Frame sync_queue<T>::get() {
+  std::unique_lock<std::mutex> lck{mtx};
+  cond.wait(lck,[this]{ return !q.empty(); });
+  auto ret = q.top();
+  q.pop();
+  return ret;
+}
+
+template <typename T>
 void sync_queue<T>::peek(T &val) {
   std::unique_lock<std::mutex> lck{mtx};
   cond.wait(lck,[this]{ return !q.empty(); });
@@ -68,10 +77,20 @@ void Switch::handle_client(std::unique_ptr<TCPSocket> sock) {
   }
 }
 
-void Switch::listener() {
+void Switch::process_queue() {
   AtomicWriter w;
   try {
-    // stuff
+    while (!frame_buffer.empty()) {
+      auto frame = frame_buffer.get();
+      auto dst = switch_table.find(frame.dst());
+
+      if (dst == switch_table.end()) {
+        // broadcast
+      }
+      else {
+        // send to the destination
+      }
+    }
   } catch (SocketException e) {
     w << e.what() << std::endl;
   }

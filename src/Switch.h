@@ -40,7 +40,7 @@ public:
   AtomicWriter w;
 
   void handle_new_connection();
-  void listener();
+  void process_queue();
   void handle_client(std::unique_ptr<TCPSocket> sock);
 
 protected:
@@ -63,6 +63,7 @@ public:
   void put(const T& val);
   void put(const T&& val);
   void get(T& val);
+  Frame get();
   void peek(T& val);
   bool empty() { return q.empty(); }
 private:
