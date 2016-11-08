@@ -13,9 +13,9 @@ void sync_queue<T>::put(const T &val) {
 }
 
 template <typename T>
-void sync_queue<T>::put(const T& val) {
+void sync_queue<T>::put(const T&& val) {
   std::lock_guard<std::mutex> lck{mtx};
-  q.push(val);
+  q.push(*val);
   cond.notify_all();
 }
 
@@ -31,7 +31,7 @@ template <typename T>
 Frame sync_queue<T>::get() {
   std::unique_lock<std::mutex> lck{mtx};
   cond.wait(lck,[this]{ return !q.empty(); });
-  auto ret = q.top();
+  Frame ret = q.top();
   q.pop();
   return ret;
 }
@@ -46,13 +46,17 @@ void sync_queue<T>::peek(T &val) {
 void Switch::handle_new_connection() {
   try {
     TCPServerSocket default_sock(this->default_port);
-    std::future<Frame> fut = std::async(std::launch::async, // ensures a separate thread is spawned
+    std::shared_ptr<TCPSocket> new_sock(default_sock.accept());
+/*
+    std::future<void> fut = std::async(std::launch::async, // ensures a separate thread is spawned
       Switch::handle_client, // handle to function we want to call
-      std::unique_ptr<TCPSocket>(default_sock.accept())); // arg to that function
+      new_sock); // arg to that function
 
     _futures.push_back(fut);
+*/
 
-
+    std::thread new_client_thread(Switch::handle_client, this, new_sock);
+    new_client_thread.detach();
 
   } catch (SocketException& e) {
     w << e.what() << std::endl;
@@ -60,7 +64,7 @@ void Switch::handle_new_connection() {
 
 }
 
-void Switch::handle_client(std::unique_ptr<TCPSocket> sock) {
+void Switch::handle_client(std::shared_ptr<TCPSocket> sock) {
   AtomicWriter w;
   try {
     TCPServerSocket newserv(serv_addr, default_port);
@@ -69,14 +73,14 @@ void Switch::handle_client(std::unique_ptr<TCPSocket> sock) {
     my_port_ostringstream << my_port;
     std::string my_port_as_string = my_port_ostringstream.str();
 
-    sock->send(static_cast<void *>(my_port_as_string.c_str()), my_port_as_string.length());
+    sock->send((void *)(my_port_as_string.c_str()), my_port_as_string.length());
     sock->cleanUp(); // not sure if this destroys?
 
-    std::unique_ptr<TCPSocket> newsock = newserv.accept();
+    std::shared_ptr<TCPSocket> newsock(newserv.accept());
 
-    broadcast_sockets.push_back(*newsock);
-    std::future<Frame> fut = std::async(std::launch::async, Switch::receive_loop, *newsock);
-    _futures.push_back(fut);
+    broadcast_sockets.push_back(newsock);
+    std::thread receive_thread(Switch::receive_loop, this, newsock);
+    receive_thread.detach();
 
   } catch (SocketException e) {
     w << e.what() << std::endl;
@@ -105,10 +109,23 @@ void Switch::process_queue() {
   }
 }
 
-void Switch::receive_loop(TCPSocket &sock) {
+void Switch::receive_loop(std::shared_ptr<TCPSocket> sock) {
   try {
     while (this->frame_buf_flag) {
       // Receive and handle frames, modifying broadcast_sockets and switch_table as necessary
+      char buffer[MAX_FRAME_SZ+1];
+      std::string buffer_string;
+      sock->recv(buffer, MAX_FRAME_SZ);
+      buffer_string = buffer;
+      Frame newframe(buffer_string);
+
+      if (switch_table.count(newframe.src()) == 0) { // Source not in switching table!
+        switch_table.insert(std::make_pair(newframe.src(), sock));
+        std::vector<std::shared_ptr<TCPSocket>>::iterator i = std::find(broadcast_sockets.begin(), broadcast_sockets.end(), sock);
+        broadcast_sockets.erase(i);
+      }
+
+      frame_buffer.put(newframe);
     }
 
   } catch (SocketException e) {

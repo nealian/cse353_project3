@@ -52,9 +52,3 @@ Frame::Frame(std::string contents) {
         _DATA = contents.substr(3, (size_t) contents[2]);
     }
 }
-
-
-/* Operators */
-bool Frame::operator <(const Frame f2) {
-    return _priority < f2._priority;
-}

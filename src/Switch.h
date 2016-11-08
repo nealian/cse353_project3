@@ -7,6 +7,7 @@
 
 // trim this down later;
 #include <atomic>
+#include <algorithm>
 #include <cerrno>
 #include <condition_variable>
 #include <cstring>
@@ -31,31 +32,6 @@
 #include "Frame.h"
 #include "PracticalSocket.h"
 
-const int RCVBUFSIZE = 2048;
-
-class Switch {
-public:
-  bool frame_buf_flag = false;
-  std::string serv_addr = "127.0.0.1";
-  uint8_t default_port = 0;
-  AtomicWriter w;
-
-  void handle_new_connection();
-  void process_queue();
-  void handle_client(std::unique_ptr<TCPSocket> sock);
-  void receive_loop(TCPSocket &sock);
-
-protected:
-  sync_queue<Frame> frame_buffer;
-  // <port, _num>? This may need to change.
-  std::unordered_map<uint8_t, TCPSocket &> switch_table;
-  std::vector<TCPSocket &> broadcast_sockets;
-private:
-  std::mutex _switch_mtx;
-  std::condition_variable _switch_cond;
-  std::vector<std::future<Frame>> _futures;
-};
-
 // TODO: rewrite this queue to be lockfree if we have time
 /**
  * from Stroustrup section 42.3.4
@@ -74,8 +50,6 @@ private:
   std::condition_variable cond;
   std::priority_queue<T> q;
 };
-
-
 
 
 /**
@@ -101,4 +75,31 @@ public:
     return *this;
   }
   ~AtomicWriter() { stream << st.str(); }
+};
+
+
+
+const int RCVBUFSIZE = 2048;
+
+class Switch {
+public:
+  bool frame_buf_flag = true;
+  std::string serv_addr = "127.0.0.1";
+  uint8_t default_port = 0;
+  AtomicWriter w;
+
+  void handle_new_connection();
+  void process_queue();
+  void handle_client(std::shared_ptr<TCPSocket> sock);
+  void receive_loop(std::shared_ptr<TCPSocket> sock);
+
+protected:
+  sync_queue<Frame> frame_buffer;
+  // <port, _num>? This may need to change.
+  std::unordered_map<uint8_t, std::shared_ptr<TCPSocket>> switch_table;
+  std::vector<std::shared_ptr<TCPSocket>> broadcast_sockets;
+private:
+  std::mutex _switch_mtx;
+  std::condition_variable _switch_cond;
+  std::vector<std::future<Frame>> _futures;
 };
