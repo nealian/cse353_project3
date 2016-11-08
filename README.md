@@ -35,4 +35,4 @@ Written by Ian Neal and Sean Turner in C++ for NMT's CSE353 Fall 2016
 | Frames can have priority                                                                   | Mostly complete -- the nodes' input doesn't distinguish priority, and neither does the nodes' input processing |
 
 ### Known Bugs
-* No known bugs at this time
+* We ran out of time to finish implementing main. Thus, the program doesn't run.

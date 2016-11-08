@@ -80,6 +80,10 @@ public:
   uint8_t default_port = 0;
   AtomicWriter w;
 
+  Switch() { }
+  Switch(const Switch&) = delete;
+  Switch(Switch&&) = delete;
+
   void handle_new_connection();
   void process_queue();
   void handle_client(std::shared_ptr<TCPSocket> sock);
