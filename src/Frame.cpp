@@ -23,12 +23,12 @@ std::string Frame::raw() {
   std::string size_raw(1, (char) size());
 
     if (_priority == 0) {
-        return src_raw + dst_raw + size_raw + _DATA;
+        return src_raw + dst_raw + size_raw + _DATA + "\n";
     } else {
         std::string priority_raw (1, (char) _priority);
         std::string zero_raw (1, 0);
 
-        return src_raw + zero_raw + size_raw + dst_raw + priority_raw + _DATA;
+        return src_raw + zero_raw + size_raw + dst_raw + priority_raw + _DATA + "\n";
     }
 }
 
@@ -51,10 +51,4 @@ Frame::Frame(std::string contents) {
         _priority = 0;
         _DATA = contents.substr(3, (size_t) contents[2]);
     }
-}
-
-
-/* Operators */
-bool Frame::operator <(const Frame f2) {
-    return _priority < f2._priority;
 }

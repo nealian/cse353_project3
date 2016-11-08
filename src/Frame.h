@@ -22,11 +22,12 @@ public:
   Frame(uint8_t src, uint8_t dst, std::string data, uint8_t priority) :
       _SRC{src}, _DST{dst}, _DATA{data}, _priority{priority} {};
   Frame(uint8_t src, uint8_t dst, std::string data) : Frame(src, dst, data, 0) {};
-  Frame(const Frame &) = delete;
-  Frame(Frame &&) = default;
+  Frame(const Frame &) = default; // For function parameters
+  Frame(Frame &&) = default; // For function return values
 
   // Operators
-  bool operator<(const Frame f2);
+  bool operator<(const Frame f2) const {return _priority < f2._priority;};
+  Frame& operator=(const Frame&) = default;
 
 protected:
   uint8_t _SRC;

@@ -1,3 +1,5 @@
-add_executable(StarNetworkSimulator StarNetworkSimulator.cpp Frame.cpp Node.cpp)
+add_executable(StarNetworkSimulator StarNetworkSimulator.cpp Frame.cpp Node.cpp Switch.cpp)
 set_property(TARGET StarNetworkSimulator PROPERTY CXX_STANDARD 11)
-target_link_libraries(StarNetworkSimulator LINK_PUBLIC PracticalSocket)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+target_link_libraries(StarNetworkSimulator LINK_PUBLIC PracticalSocket Threads::Threads)
