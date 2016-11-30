@@ -46,7 +46,7 @@ void sync_queue<T>::peek(T &val) {
 
 
 /* Switch class */
-void Switch::Switch() {
+Switch::Switch() {
 
   std::thread queue_thread(&Switch::process_queue, this);
   queue_thread.detach();
