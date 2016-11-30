@@ -105,7 +105,7 @@ void Node::receive_loop() {
 
 Node::Node(uint8_t num, unsigned short switch_tcp_port) :
     _num {num},
-    _infile(("Node" + std::to_string((unsigned int) num) + "Input.txt").c_str()),
+    _infile(("node" + std::to_string((unsigned int) num) + ".txt").c_str()),
     _outfile(("Node" + std::to_string((unsigned int) num) + "Output.txt").c_str()) {
   // Connection negotiation
   _switch_socket = new TCPSocket("localhost", switch_tcp_port);
