@@ -70,9 +70,6 @@ public:
 };
 
 
-
-const int RCVBUFSIZE = 2048;
-
 class Switch {
 public:
   bool transmissions_complete = false;
@@ -80,7 +77,7 @@ public:
   uint8_t default_port = 0;
   AtomicWriter w;
 
-  Switch() { }
+  Switch();
   Switch(const Switch&) = delete;
   Switch(Switch&&) = delete;
 

@@ -43,6 +43,19 @@ void sync_queue<T>::peek(T &val) {
   val = q.top();
 }
 
+
+
+/* Switch class */
+void Switch::Switch() {
+
+  std::thread queue_thread(&Switch::process_queue, this);
+  queue_thread.detach();
+
+  while (not this->transmissions_complete) {
+    Switch::handle_new_connection();
+  }
+}
+
 void Switch::handle_new_connection() {
   try {
     TCPServerSocket default_sock(this->default_port);

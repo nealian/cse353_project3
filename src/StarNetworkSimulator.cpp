@@ -11,7 +11,7 @@ int main(int argc, char **argv)
   auto aSwitch = new Switch();
   std::vector<Node *> nodes;
 
-  for (int i = 0; i < std::stoi(argv[1]); ++i) {
+  for (int i = 1; i <= std::stoi(argv[1]); ++i) {
     auto node = new Node(i, aSwitch->default_port);
     nodes.push_back(node);
   }
