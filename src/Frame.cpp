@@ -28,7 +28,7 @@ std::string Frame::raw() {
         std::string priority_raw (1, (char) _priority);
         std::string zero_raw (1, 0);
         compute_crc();
-        return raw_no_crc() + _crc + "\n";
+        return raw_no_crc() + std::to_string(_crc) + "\n";
     }
 }
 
