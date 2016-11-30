@@ -21,7 +21,7 @@ std::string RingFrame::data() {
   return _DATA;
 }
 
-std::string RingFrame::raw() {
+std::string RingFrame::raw() { // TODO FIXME
   std::string src_raw(1, (char) _ack ? 1 : 0);
   std::string src_raw(1, (char) _SRC); // Using the fill(n, char) constructor
   std::string dst_raw(1, (char) _DST);
