@@ -16,13 +16,5 @@ int main(int argc, char **argv)
     nodes.push_back(node);
   }
 
-  aSwitch->handle_new_connection();
-
-  for (auto n : nodes) {
-    n->read_from_input();
-    n->send_loop();
-    n->receive_loop();
-  }
-
   return 0;
 }

@@ -31,7 +31,7 @@ template <typename T>
 T sync_queue<T>::get() {
   std::unique_lock<std::mutex> lck{mtx};
   cond.wait(lck,[this]{ return !q.empty(); });
-  auto ret = q.top();
+  T ret = q.top();
   q.pop();
   return ret;
 }
