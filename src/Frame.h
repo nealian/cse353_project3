@@ -2,8 +2,9 @@
 
 #include <string>
 #include <cstdint>
+#include <vector>
 
-#define MAX_FRAME_SZ 258 // 1 byte for each SRC, DST, and SIZE/ACK, and 255 bytes for DATA.
+#define MAX_FRAME_SZ 259 // 1 byte for each SRC, DST, and SIZE/ACK, and 255 bytes for DATA.
 
 class Frame {
 public:
@@ -34,4 +35,9 @@ protected:
   uint8_t _DST;
   std::string _DATA;
   uint8_t _priority;
+  uint8_t _crc = 0;
+
+private:
+  void compute_crc();
+  std::string raw_no_crc();
 };
