@@ -1,3 +1,5 @@
+set(CMAKE_BUILD_TYPE Debug)
+
 add_executable(StarNetworkSimulator StarNetworkSimulator.cpp Frame.cpp Node.cpp Switch.cpp)
 set_property(TARGET StarNetworkSimulator PROPERTY CXX_STANDARD 11)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
