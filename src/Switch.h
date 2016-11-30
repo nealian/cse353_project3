@@ -74,7 +74,7 @@ class Switch {
 public:
   bool transmissions_complete = false;
   std::string serv_addr = "127.0.0.1";
-  uint8_t default_port = 0;
+  uint16_t default_port = 5643;
   AtomicWriter w;
 
   Switch();
