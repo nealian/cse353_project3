@@ -2,7 +2,6 @@
 
 #include <string>
 #include <cstdint>
-#include <vector>
 
 #define MAX_STARFRAME_SZ 258 // 1 byte for each SRC, DST, and SIZE/ACK, 255 bytes for DATA, and 1 byte for CRC.
 
@@ -14,7 +13,6 @@ public:
   uint8_t size();
   std::string data();
   std::string raw();
-  uint8_t crc();
 
   // Setters
   void clear();
@@ -38,5 +36,6 @@ protected:
   uint8_t _priority;
 
 private:
+  void compute_crc();
   std::string raw_no_crc();
 };
