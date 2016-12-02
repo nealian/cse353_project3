@@ -51,30 +51,24 @@ Switch::Switch() {
   std::thread queue_thread(&Switch::process_queue, this);
   queue_thread.detach();
 
-  while (not this->transmissions_complete) {
-    Switch::handle_new_connection();
-  }
+  std::thread connections_thread(&Switch::handle_new_connections, this);
+  connections_thread.detach();
 }
 
-void Switch::handle_new_connection() {
-  try {
-    TCPServerSocket default_sock(this->default_port);
-    std::shared_ptr<TCPSocket> new_sock(default_sock.accept());
-/*
-    std::future<void> fut = std::async(std::launch::async, // ensures a separate thread is spawned
-      Switch::handle_client, // handle to function we want to call
-      new_sock); // arg to that function
+void Switch::handle_new_connections() {
+  while (not this->transmissions_complete) {
+    try {
+      TCPServerSocket default_sock(this->default_port);
+      std::shared_ptr<TCPSocket> new_sock(default_sock.accept());
 
-    _futures.push_back(fut);
-*/
+      std::thread new_client_thread(&Switch::handle_client, this, new_sock);
+      new_client_thread.detach();
 
-    std::thread new_client_thread(&Switch::handle_client, this, new_sock);
-    new_client_thread.detach();
+    } catch (SocketException &e) {
+      w << e.what() << std::endl;
+    }
 
-  } catch (SocketException& e) {
-    w << e.what() << std::endl;
   }
-
 }
 
 void Switch::handle_client(std::shared_ptr<TCPSocket> sock) {
