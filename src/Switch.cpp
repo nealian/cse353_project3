@@ -56,18 +56,17 @@ Switch::Switch() {
 }
 
 void Switch::handle_new_connections() {
-  while (not this->transmissions_complete) {
-    try {
-      TCPServerSocket default_sock(this->default_port);
+  try {
+    TCPServerSocket default_sock(this->default_port);
+    while (not this->transmissions_complete) {
       std::shared_ptr<TCPSocket> new_sock(default_sock.accept());
 
       std::thread new_client_thread(&Switch::handle_client, this, new_sock);
       new_client_thread.detach();
 
-    } catch (SocketException &e) {
-      w << e.what() << std::endl;
     }
-
+  } catch (SocketException &e) {
+      w << e.what() << std::endl;
   }
 }
 
