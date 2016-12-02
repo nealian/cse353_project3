@@ -110,11 +110,11 @@ Node::Node(uint8_t num, unsigned short switch_tcp_port) :
   // Connection negotiation
   _switch_socket = new TCPSocket("localhost", switch_tcp_port);
   int attempts = 0;
-  while (attempts < 5 and _switch_socket->getForeignPort() == switch_tcp_port) {
+  while (attempts++ < 5 and _switch_socket->getForeignPort() == switch_tcp_port) {
     try {
       char buf[128];
       _switch_socket->recv(buf, 127);
-      unsigned char new_port = atoi(buf);
+      unsigned short new_port = atoi(buf);
       _switch_socket = new TCPSocket("localhost", new_port);
     } catch (SocketException &e) {
       string s(e.what());

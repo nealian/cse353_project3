@@ -74,7 +74,7 @@ void Switch::handle_new_connections() {
 void Switch::handle_client(std::shared_ptr<TCPSocket> sock) {
   AtomicWriter w;
   try {
-    TCPServerSocket newserv(serv_addr, default_port);
+    TCPServerSocket newserv(serv_addr, 0);
     unsigned short my_port = (newserv.getLocalPort());
     std::ostringstream my_port_ostringstream;
     my_port_ostringstream << my_port;
