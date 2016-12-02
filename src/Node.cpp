@@ -98,8 +98,13 @@ void Node::send_loop() {
 
 void Node::receive_loop() {
   while (not _all_finished) {
-    Frame received_fame = read_from_socket();
-    handle_frame(received_fame);
+    try {
+      Frame received_fame = read_from_socket();
+      handle_frame(received_fame);
+    } catch (NodeException &e) {
+      std::string s(e.what());
+      std::cerr << s << std::endl;
+    }
   }
 }
 
