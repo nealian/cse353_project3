@@ -15,5 +15,10 @@ int main(int argc, char **argv)
     auto node = new Node(i, switch1.default_port);
     nodes.push_back(node);
   }
+
+  while(1) { // TODO make this actually wait until the switch notices traffic's done
+    std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Sleep for half a second
+  }
+
   return 0;
 }
