@@ -81,7 +81,7 @@ public:
   Switch(const Switch&) = delete;
   Switch(Switch&&) = delete;
 
-  void handle_new_connection();
+  void handle_new_connections();
   void process_queue();
   void handle_client(std::shared_ptr<TCPSocket> sock);
   void receive_loop(std::shared_ptr<TCPSocket> sock);
