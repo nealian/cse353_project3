@@ -21,20 +21,39 @@ std::string RingFrame::data() {
   return _DATA;
 }
 
-std::string RingFrame::raw() { // TODO FIXME
-  std::string src_raw(1, (char) _ack ? 1 : 0);
-  std::string src_raw(1, (char) _SRC); // Using the fill(n, char) constructor
-  std::string dst_raw(1, (char) _DST);
-  std::string size_raw(1, (char) size());
+std::string RingFrame::raw_no_crc() {
+  if (_tok) {
+    std::string ac_fc_raw(1, 1);
 
-  if (_priority == 0) {
-    return src_raw + dst_raw + size_raw + _DATA + "\n";
+    return ac_fc_raw + ac_fc_raw;
   } else {
-    std::string priority_raw (1, (char) _priority);
-    std::string zero_raw (1, 0);
+    std::string zero_as_string(1, 0);
+    std::string src_raw(1, (char) _SRC); // Using the fill(n, char) constructor
+    std::string dst_raw(1, (char) _DST);
+    std::string size_raw(1, (char) size());
 
-    return src_raw + zero_raw + size_raw + dst_raw + priority_raw + _DATA + "\n";
+    return zero_as_string + zero_as_string + dst_raw + src_raw + size_raw + _DATA;
   }
+}
+
+uint8_t RingFrame::crc() {
+  auto raw_str = raw_no_crc();
+
+  std::vector<unsigned char> bytes(raw_str.begin(), raw_str.end());
+
+  uint8_t crc = 0;
+
+  for (auto b : bytes) {
+    crc += b;
+  }
+
+  return crc;
+}
+
+std::string RingFrame::raw() {
+  std::string ack_raw(1, (char) _ack ? 3 : 0);
+  std::string crc_raw(1, (char) crc());
+  return raw_no_crc() + crc_raw + ack_raw + "\n";
 }
 
 
@@ -48,12 +67,5 @@ void RingFrame::ack() {
 RingFrame::RingFrame(std::string contents) {
   _SRC = (uint8_t) contents[0];
   _DST = (uint8_t) contents[1];
-  if(_DST == 0) {
-    _DST = (uint8_t) contents[3];
-    _priority = (uint8_t) contents[4];
-    _DATA = contents.substr(5, (size_t) contents[2]);
-  } else {
-    _priority = 0;
-    _DATA = contents.substr(3, (size_t) contents[2]);
-  }
+  _DATA = contents.substr(3, (size_t) contents[2]);
 }
