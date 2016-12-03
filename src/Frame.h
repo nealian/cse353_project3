@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-#define MAX_FRAME_SZ 259 // 1 byte for each SRC, DST, and SIZE/ACK, and 255 bytes for DATA.
+#define MAX_FRAME_SZ 259 // 1 byte for each SRC, DST, and SIZE/ACK, and 255 bytes for DATA, then 1 last byte for the CRC
 
 class Frame {
 public:
