@@ -18,18 +18,8 @@ std::string StarFrame::data() {
 }
 
 std::string StarFrame::raw() {
-  std::string src_raw(1, (char) _SRC); // Using the fill(n, char) constructor
-  std::string dst_raw(1, (char) _DST);
-  std::string size_raw(1, (char) size());
-
-  if (_priority == 0) {
-    return src_raw + dst_raw + size_raw + _DATA + "\n";
-  } else {
-    std::string priority_raw (1, (char) _priority);
-    std::string zero_raw (1, 0);
-    compute_crc();
-    return raw_no_crc() + std::to_string(_crc) + "\n";
-  }
+  std::string raw_crc(1, (char) crc());
+  return raw_no_crc() + raw_crc + "\n";
 }
 
 
@@ -53,16 +43,18 @@ StarFrame::StarFrame(std::string contents) {
   }
 }
 
-void StarFrame::compute_crc() {
+uint8_t StarFrame::crc() {
   auto raw_str = raw_no_crc();
 
   std::vector<unsigned char> bytes(raw_str.begin(), raw_str.end());
 
-  _crc = 0;
+  uint8_t crc = 0;
 
   for (auto b : bytes) {
-    _crc += b;
+    crc += b;
   }
+
+  return crc;
 }
 
 std::string StarFrame::raw_no_crc() {
