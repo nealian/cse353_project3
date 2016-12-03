@@ -21,7 +21,7 @@
 #include <thread>
 #include <vector>
 #include <queue>
-#include "Frame.h"
+#include "StarFrame.h"
 #include "PracticalSocket.h"
 
 // TODO: rewrite this queue to be lockfree if we have time
@@ -87,12 +87,12 @@ public:
   void receive_loop(std::shared_ptr<TCPSocket> sock);
 
 protected:
-  sync_queue<Frame> frame_buffer;
+  sync_queue<StarFrame> frame_buffer;
   // <port, _num>? This may need to change.
   std::unordered_map<uint8_t, std::shared_ptr<TCPSocket>> switch_table;
   std::vector<std::shared_ptr<TCPSocket>> broadcast_sockets;
 private:
   std::mutex _switch_mtx;
   std::condition_variable _switch_cond;
-  //std::vector<std::future<Frame>> _futures;
+  //std::vector<std::future<StarFrame>> _futures;
 };

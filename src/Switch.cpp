@@ -136,7 +136,7 @@ void Switch::receive_loop(std::shared_ptr<TCPSocket> sock) {
       std::string buffer_string;
       sock->recv(buffer, MAX_FRAME_SZ);
       buffer_string = buffer;
-      Frame newframe(buffer_string);
+      StarFrame newframe(buffer_string);
 
       if (switch_table.count(newframe.src()) == 0) { // Source not in switching table!
         switch_table.insert(std::make_pair(newframe.src(), sock));
