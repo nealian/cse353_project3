@@ -82,9 +82,11 @@ void Switch::handle_client(std::shared_ptr<TCPSocket> sock) {
     while (not this->transmissions_complete) {
 
       sock->send(static_cast<const void *>(my_port_as_string.c_str()), my_port_as_string.length());
-      sock->cleanUp(); // not sure if this destroys?
 
       std::shared_ptr<TCPSocket> newsock(newserv.accept());
+
+      std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Sleep for half a second
+      sock->cleanUp();
 
       broadcast_sockets.push_back(newsock);
       std::thread receive_thread(&Switch::receive_loop, this, newsock);
