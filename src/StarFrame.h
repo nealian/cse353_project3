@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-#define MAX_FRAME_SZ 258 // 1 byte for each SRC, DST, and SIZE/ACK, 255 bytes for DATA, and 1 byte for CRC.
+#define MAX_STARFRAME_SZ 258 // 1 byte for each SRC, DST, and SIZE/ACK, 255 bytes for DATA, and 1 byte for CRC.
 
 class StarFrame {
 public:

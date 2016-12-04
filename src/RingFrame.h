@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-#define MAX_FRAME_SZ 262 // 1 byte for each AC, FC, SRC, DST, and SIZE, 255 bytes for DATA, and 1
+#define MAX_RINGFRAME_SZ 262 // 1 byte for each AC, FC, SRC, DST, and SIZE, 255 bytes for DATA, and 1
   // byte for each CRC and FS
 
 class RingFrame {

@@ -5,22 +5,16 @@
 
 #pragma once
 
-// trim this down later;
-//#include <atomic>
-#include <algorithm>
 #include <condition_variable>
-#include <cstring>
 #include <fstream>
-#include <functional>
-#include <iostream>
 #include <unordered_map>
 #include <memory>
 #include <mutex>
-#include <sstream>
 #include <string>
 #include <thread>
 #include <vector>
 #include <queue>
+#include "AtomicWriter.h"
 #include "StarFrame.h"
 #include "PracticalSocket.h"
 
@@ -44,31 +38,6 @@ private:
 };
 
 
-/**
- * code from:
- * https://stackoverflow.com/questions/15033827/multiple-threads-writing-to-stdcout-or-stdcerr
- * to solve problems with threads writing to streams
- *
- * I used this to get around some weird problems in p1. Streams *should* be threadsafe,
- * but I'm throwing this in just in case.
- */
-class AtomicWriter {
-  std::ostringstream st;
-  std::ostream &stream;
-public:
-  AtomicWriter(std::ostream &s=std::cout):stream(s) { }
-  template <typename T>
-  AtomicWriter& operator<<(T const& t) {
-    st << t;
-    return *this;
-  }
-  AtomicWriter& operator<<( std::ostream&(*f)(std::ostream&) ) {
-    st << f;
-    return *this;
-  }
-  ~AtomicWriter() { stream << st.str(); }
-};
-
 
 class Switch {
 public:
@@ -88,11 +57,9 @@ public:
 
 protected:
   sync_queue<StarFrame> frame_buffer;
-  // <port, _num>? This may need to change.
   std::unordered_map<uint8_t, std::shared_ptr<TCPSocket>> switch_table;
   std::vector<std::shared_ptr<TCPSocket>> broadcast_sockets;
 private:
   std::mutex _switch_mtx;
   std::condition_variable _switch_cond;
-  //std::vector<std::future<StarFrame>> _futures;
 };

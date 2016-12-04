@@ -7,7 +7,7 @@
 
 template <typename T>
 void sync_queue<T>::put(const T &val) {
-  std::lock_guard<std::mutex> lck{mtx}; // TODO what is this for?
+  std::lock_guard<std::mutex> lck{mtx};
   q.push(val);
   cond.notify_all();
 }
@@ -132,9 +132,9 @@ void Switch::receive_loop(std::shared_ptr<TCPSocket> sock) {
   try {
     while (not this->transmissions_complete) {
       // Receive and handle frames, modifying broadcast_sockets and switch_table as necessary
-      char buffer[MAX_FRAME_SZ+1];
+      char buffer[MAX_STARFRAME_SZ+1];
       std::string buffer_string;
-      sock->recv(buffer, MAX_FRAME_SZ);
+      sock->recv(buffer, MAX_STARFRAME_SZ);
       buffer_string = buffer;
       StarFrame newframe(buffer_string);
 
