@@ -71,30 +71,9 @@ void Switch::handle_new_connections() {
 }
 
 void Switch::handle_client(std::shared_ptr<TCPSocket> sock) {
-  AtomicWriter w;
-  try {
-    TCPServerSocket newserv(serv_addr, 0);
-    unsigned short my_port = (newserv.getLocalPort());
-    std::ostringstream my_port_ostringstream;
-    my_port_ostringstream << my_port;
-    std::string my_port_as_string = my_port_ostringstream.str();
-
-    while (not this->transmissions_complete) {
-
-      sock->send(static_cast<const void *>(my_port_as_string.c_str()), my_port_as_string.length());
-
-      std::shared_ptr<TCPSocket> newsock(newserv.accept());
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Sleep for half a second
-      sock->cleanUp();
-
-      broadcast_sockets.push_back(newsock);
-      std::thread receive_thread(&Switch::receive_loop, this, newsock);
-      receive_thread.detach();
-    }
-  } catch (SocketException e) {
-    w << e.what() << std::endl;
-  }
+  broadcast_sockets.push_back(sock);
+  std::thread receive_thread(&Switch::receive_loop, this, sock);
+  receive_thread.detach();
 }
 
 void Switch::process_queue() {

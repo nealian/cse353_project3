@@ -23,7 +23,6 @@ public:
   Frame read_from_socket() throw (NodeException);
   Frame read_from_input();
   bool is_mine(Frame to_check);
-  void set_port(unsigned short port);
   void handle_frame(Frame frame);
   void send_loop();
   void receive_loop();

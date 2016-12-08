@@ -62,18 +62,8 @@ bool Node::is_mine(Frame to_check) {
   return to_check.dst() == _num;
 }
 
-void Node::set_port(unsigned short port) {
-  _switch_socket = new TCPSocket("localhost", port);
-}
-
 void Node::handle_frame(Frame frame) {
-  if (frame.src() == 0) { // Control frame from the switch; change TCP port to the port specified
-    // in the data (in this case, actually made into a string rather than raw bytes!
-    istringstream frame_data(frame.data());
-    unsigned short port_num;
-    frame_data >> port_num;
-    set_port(port_num);
-  } else if (is_mine(frame)) {
+  if (is_mine(frame)) {
     if (frame.size() == 0) { // Frame is an acknowledgement
       _ack = true;
       // Just let the frame be deleted
@@ -114,19 +104,6 @@ Node::Node(uint8_t num, unsigned short switch_tcp_port) :
     _outfile(("Node" + std::to_string((unsigned int) num) + "Output.txt").c_str()) {
   // Connection negotiation
   _switch_socket = new TCPSocket("localhost", switch_tcp_port);
-  int attempts = 0;
-  while (attempts++ < 5 and _switch_socket->getForeignPort() == switch_tcp_port) {
-    try {
-      char buf[128];
-      _switch_socket->recv(buf, 127);
-      unsigned short new_port = atoi(buf);
-      _switch_socket = new TCPSocket("localhost", new_port);
-    } catch (SocketException &e) {
-      string s(e.what());
-      std::cerr << s << std::endl;
-      std::this_thread::sleep_for(std::chrono::milliseconds(attempts * 100));
-    }
-  }
 
   // Start receive loop in new thread
   std::thread receive_thread(&Node::receive_loop, this);
