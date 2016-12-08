@@ -46,7 +46,7 @@ Frame::Frame(std::string contents) {
     if(_DST == 0) {
         _DST = (uint8_t) contents[3];
         _priority = (uint8_t) contents[4];
-        _DATA = contents.substr(5, (size_t) contents[2]);
+        _DATA = contents.substr(5, (size_t) contents[2]); // TODO: string is going out of range here
     } else {
         _priority = 0;
         _DATA = contents.substr(3, (size_t) contents[2]);
