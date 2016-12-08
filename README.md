@@ -13,7 +13,8 @@ Written by Ian Neal and Sean Turner in C++ for NMT's CSE353 Fall 2016
 * `src/` -- includes our written source code
   * `StarRingNetworkSimulator.h` and `StarRing
   NetworkSimulator.cpp` -- Main class code
-  * `Frame.h` and `Frame.cpp` -- Frame class code
+  * `StarFrame.h` and `StarFrame.cpp` -- Star Frame class code
+  * `RingFrame.h` and `RingFrame.cpp` -- Ring Frame class code
   * `Node.h` and `Node.cpp` -- Node class code
   * `Switch.h` and `Switch.cpp` -- Switch class and supporting types
   * `Hub.h` and `Hub.cpp` -- Hub class and supporting types
@@ -49,4 +50,4 @@ Written by Ian Neal and Sean Turner in C++ for NMT's CSE353 Fall 2016
 ### Known Bugs
 * Star network still doesn't work right. No output files get written
 * `Frame.cpp:49` throws out-of-range exceptions due to the substring stuff
-*
+* Incomplete ring hub means that ring traffic also doesn't work.
