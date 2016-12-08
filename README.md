@@ -47,4 +47,6 @@ Written by Ian Neal and Sean Turner in C++ for NMT's CSE353 Fall 2016
 | Hub will create a new token if lost                                                        | Incomplete                   |
 
 ### Known Bugs
-* None at this time
+* Star network still doesn't work right. No output files get written
+* `Frame.cpp:49` throws out-of-range exceptions due to the substring stuff
+*
