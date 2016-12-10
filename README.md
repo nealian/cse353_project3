@@ -51,4 +51,4 @@ Written by Ian Neal and Sean Turner in C++ for NMT's CSE353 Fall 2016
 * Star network still doesn't work right. No output files get written
 * `Frame.cpp:49` throws out-of-range exceptions due to the substring stuff
 * Incomplete ring hub means that ring traffic also doesn't work.
-* Execution stops in `Switch::handle_new_connection()`, and proceeds no further from the `accept` because the other nodes haven't connected yet
+* Execution stops in `Switch::handle_new_connection()`, and proceeds no further from the `accept` since it seems the nodes are either waiting on `recv` or sleeping.
