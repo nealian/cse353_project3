@@ -3,8 +3,23 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <mutex>
 #include "AtomicWriter.h"
 #include "PracticalSocket.h"
+
+
+class HubConnectionList {
+public:
+  std::shared_ptr<TCPSocket> right_port(int num);
+  void add(std::shared_ptr<TCPSocket> sock);
+  void remove(int num);
+  std::shared_ptr<TCPSocket> operator[](std::vector<std::shared_ptr<TCPSocket>>::size_type n);
+
+  HubConnectionList() {};
+private:
+  std::vector<std::shared_ptr<TCPSocket>> _list;
+  std::mutex _list_mtx;
+};
 
 class Hub {
 public:
@@ -21,6 +36,5 @@ public:
   void receive_loop(std::shared_ptr<TCPSocket> sock);
 
 protected:
-  std::vector<std::shared_ptr<TCPSocket>> nodes;
-  std::vector<std::shared_ptr<TCPSocket>>::size_type active_node;
+  HubConnectionList connections;
 };
