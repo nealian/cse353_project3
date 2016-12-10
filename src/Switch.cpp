@@ -59,7 +59,7 @@ Switch::Switch() {
 void Switch::handle_new_connection() {
   try {
     TCPServerSocket default_sock(this->default_port);
-    std::shared_ptr<TCPSocket> new_sock(default_sock.accept());
+    std::shared_ptr<TCPSocket> new_sock(default_sock.accept()); // TODO code execution seems to die here...
 /*
     std::future<void> fut = std::async(std::launch::async, // ensures a separate thread is spawned
       Switch::handle_client, // handle to function we want to call
