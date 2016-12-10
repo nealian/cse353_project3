@@ -47,9 +47,9 @@ StarFrame Node::read_from_input() {
 }
 
 StarFrame Node::read_from_socket() throw(NodeException) {
-  char in_buf[MAX_FRAME_SZ + 1] = {'\0'};
+  char in_buf[MAX_STARFRAME_SZ + 1] = {'\0'};
 
-  if (_switch_socket->recv(in_buf, MAX_FRAME_SZ) > 0) {
+  if (_switch_socket->recv(in_buf, MAX_STARFRAME_SZ) > 0) {
     std::string frame_contents(in_buf);
     StarFrame ret_frame(frame_contents);
     return ret_frame;
