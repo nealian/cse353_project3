@@ -14,6 +14,7 @@
 #include <thread>
 #include <vector>
 #include <queue>
+#include <algorithm>
 #include "AtomicWriter.h"
 #include "StarFrame.h"
 #include "PracticalSocket.h"

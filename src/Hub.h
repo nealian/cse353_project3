@@ -22,5 +22,5 @@ public:
 
 protected:
   std::vector<std::shared_ptr<TCPSocket>> nodes;
-  std::vector::size_type active_node;
+  std::vector<std::shared_ptr<TCPSocket>>::size_type active_node;
 };
