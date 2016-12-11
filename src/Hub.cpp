@@ -5,7 +5,7 @@
 
 std::shared_ptr<TCPSocket> HubConnectionList::right_port(int num) {
   _list_mtx.lock();
-  std::shared_ptr elem;
+  std::shared_ptr<TCPSocket> elem;
   if (num > _list.size()) {
     elem = _list[num % _list.size()];
   } else {
